@@ -12,5 +12,7 @@ int main() {
 	matrix edit_matrix(fword, sword);
 
 	edit_matrix.createEditMatrix();
+
+	edit_matrix.displayEditDistance();
 	system("pause");
 }

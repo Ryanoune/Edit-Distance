@@ -3,12 +3,15 @@
 #define MATRIX_H
 #include<iostream>
 #include<string>
+#include<algorithm>
 using namespace std;
+
 class matrix {
 public:
 	matrix(string, string);
 	int getflength();
 	int getslength();
+	int leastValue(int, int, int);
 	void createEditMatrix();
 	void displayEditDistance();
 private:
@@ -35,48 +38,91 @@ int matrix::getflength() {
 int matrix::getslength() {
 	return sWord_length;
 }
+
+int matrix::leastValue(int tl, int t, int l) {
+	return min({ tl, t, l });
+}
+
 void matrix::createEditMatrix() {
 	cout << "First word: " << this->fWord << endl;
 	cout << "Length: " << getflength() << endl;
 	cout << "Second word: " << this->sWord << endl;
 	cout << "Length: " << getslength() << endl;
 
-	for (int i = 0; i < getslength() + 1; i++) {
-		edit_matrix[i] = new int[getflength() + 1];
+	int width = getslength() + 1;
+	int height = getflength() + 1;
+	int** matrix = new int*[width];
+
+	for (int i = 0; i < width; ++i) {
+		matrix[i] = new int[height];
 	}
-	this->edit_matrix = new int*[getslength() + 1];
-	int setFRow = 0;
-	int setFCol = 0;
-	for (int i = 0; i < getslength() + 1; i++) {
-		for (int j = 0; j < getflength() + 1; j++) {
-			if (i == 0) {
-				edit_matrix[i][j] = setFRow;
-				setFRow++;
+
+	int num = 0;
+	for (int i = 0; i < width; ++i) {
+		matrix[0][i] = num;
+		num++;
+	}
+
+	num = 0;
+	for (int i = 0; i < height; ++i) {
+		matrix[i][0] = num;
+		num++;
+	}
+
+	for (int i = 1; i < width; i++) {
+		for (int j = 1; j < height; j++) {
+			//set values to top-left, top, and left of current index
+			int top_left = matrix[i - 1][j - 1];
+			int top = matrix[i][j - 1];
+			int left = matrix[i - 1][j];
+			
+			//set possible values for index
+			int tlSum;
+			int tSum;
+			int lSum;
+
+			//top-left sum
+			//if character is a match
+			if (sWord.at(i-1) == fWord.at(j-1)) {
+				tlSum = top_left;
 			}
-			else if (j == 0) {
-				edit_matrix[i][j] = setFCol;
-				setFCol++;
+			else {
+				tlSum = top_left + 1;
 			}
 
+			//top sum
+			tSum = top + 1;
+			//left sum
+			lSum = left + 1;
+
+			cout << "tlsum: " << tlSum << endl;
+			cout << "tsum: " << tSum << endl;
+			cout << "lsum: " << lSum << endl;
+			matrix[i][j] = leastValue(tlSum, tSum, lSum);
+			cout << matrix[i][j] << endl;
 		}
-	}
-	cout << endl;
-	
-
-	
-	
-	for (int i = 1; 0 < getslength()+1; i++) {
 		
-		for (int j = 0; j < getflength()+1; j++) {
-			cout << edit_matrix[i][j] << " ";
-
-		}
-		cout << endl;
 	}
+
+
+
+	this->edit_matrix = matrix;
 }
 void matrix::displayEditDistance() {
 	cout << "The matrix:" << endl;
 
+	int width = getslength() + 1;
+	int height = getflength() + 1;
 
+
+
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			cout << this->edit_matrix[i][j] << " ";
+		}
+		cout << endl;
+	}
 	
+	cout << "The edit distance is: " << this->edit_matrix[width-1][height-1] << endl;
+
 }
