@@ -17,6 +17,8 @@ public:
 private:
 	string fWord;
 	string sWord;
+	string edit1;
+	string edit2;
 	int f_length;
 	int s_length;
 	int** edit_matrix;
@@ -52,8 +54,10 @@ void matrix::createEditMatrix() {
 	for (int i = 0; i < row +1; i++)
 		arr[i] = new int[col+1];
 	
+	string str1 = fWord;
+	string str2 = sWord;
 
-	
+//creating the edit matrix
 	for (int i = 0; i <= row; i++)
 	{
 		for (int j = 0; j <= col; j++)
@@ -83,7 +87,41 @@ void matrix::createEditMatrix() {
 
 	
 	this->edit_matrix = arr;
+	
 
+	int firstI = getflength();
+	int secI = getslength();
+	int rowI = f_length;
+	int colI = s_length;
+	int curr = arr[rowI][colI];
+//backtrace
+	while (rowI != 0 && colI != 0) {
+		curr = leastValue(arr[rowI][colI - 1],  // Insert 
+			arr[rowI - 1][colI],  // Remove 
+			arr[rowI - 1][colI - 1]); // Replace 
+
+		if (curr == arr[rowI - 1][colI - 1]) {
+			rowI = rowI - 1;
+			colI = colI - 1;
+			firstI = firstI - 1;
+			secI = secI - 1;
+		}
+		else if (curr == arr[rowI - 1][colI]) {
+			rowI = rowI - 1;
+			colI = colI;
+			str2.insert(secI, "_");
+			firstI = firstI - 1;
+		}
+		else if (curr == arr[rowI][colI - 1]) {
+			rowI = rowI;
+			colI = colI - 1;
+			str1.insert(firstI, "_");
+			secI = secI - 1;
+		}
+	}
+	
+	this->edit1 = str1;
+	this->edit2 = str2;
 }
 void matrix::displayEditDistance() {
 	cout << "The matrix:" << endl;
@@ -101,4 +139,7 @@ void matrix::displayEditDistance() {
 	
 	cout << "The edit distance is: " << this->edit_matrix[f_length][s_length] << endl;
 
+	cout << "Alignment is: \n";
+	cout << edit1 << endl;
+	cout << edit2 << endl;
 }
