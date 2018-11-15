@@ -90,6 +90,7 @@ void matrix::createEditMatrix() {
 
 }
 
+//performing the backtrace
 void matrix::backtrace() {
 
 	string str1 = fWord;
@@ -100,7 +101,7 @@ void matrix::backtrace() {
 	int rowI = f_length;
 	int colI = s_length;
 	int curr = edit_matrix[rowI][colI];
-	//backtrace
+
 	while ((rowI != 0) & (colI != 0)) {
 		curr = leastValue(edit_matrix[rowI][colI - 1],  // Insert 
 			edit_matrix[rowI - 1][colI],  // Remove 
@@ -141,17 +142,30 @@ void matrix::backtrace() {
 	this->edit1 = str1;
 	this->edit2 = str2;
 }
+//displaying the formatted information
 void matrix::displayEditDistance() {
 	cout << "The matrix:" << endl;
-
+	cout << "  ";
+	for (int i = 0; i <= s_length; i++) {
+		cout << "      " << i;
+	}
+	cout << endl;
+	cout << "  ";
 	
-
+	
+	
+	cout << endl;
 	for (int i = 0; i <= f_length; i++)
 	{
+		cout << i <<" |";
 		for (int j = 0; j <= s_length; j++)
 		{
-			cout << this->edit_matrix[i][j] << "\t";
+			cout <<"  :  "<< this->edit_matrix[i][j]<<" " ;
 		}
+		cout << "  |";
+		cout << endl;
+		cout << "  ";
+		
 		cout << endl;
 	}
 	
