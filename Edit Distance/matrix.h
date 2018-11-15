@@ -4,6 +4,7 @@
 #include<iostream>
 #include<string>
 #include<algorithm>
+
 using namespace std;
 
 class matrix {
@@ -13,6 +14,7 @@ public:
 	int getslength();
 	int leastValue(int, int, int);
 	void createEditMatrix();
+	void backtrace();
 	void displayEditDistance();
 private:
 	string fWord;
@@ -54,9 +56,6 @@ void matrix::createEditMatrix() {
 	for (int i = 0; i < row +1; i++)
 		arr[i] = new int[col+1];
 	
-	string str1 = fWord;
-	string str2 = sWord;
-
 //creating the edit matrix
 	for (int i = 0; i <= row; i++)
 	{
@@ -89,37 +88,56 @@ void matrix::createEditMatrix() {
 	this->edit_matrix = arr;
 	
 
+}
+
+void matrix::backtrace() {
+
+	string str1 = fWord;
+	string str2 = sWord;
+
 	int firstI = getflength();
 	int secI = getslength();
 	int rowI = f_length;
 	int colI = s_length;
-	int curr = arr[rowI][colI];
-//backtrace
-	while (rowI != 0 && colI != 0) {
-		curr = leastValue(arr[rowI][colI - 1],  // Insert 
-			arr[rowI - 1][colI],  // Remove 
-			arr[rowI - 1][colI - 1]); // Replace 
+	int curr = edit_matrix[rowI][colI];
+	//backtrace
+	while ((rowI != 0) & (colI != 0)) {
+		curr = leastValue(edit_matrix[rowI][colI - 1],  // Insert 
+			edit_matrix[rowI - 1][colI],  // Remove 
+			edit_matrix[rowI - 1][colI - 1]); // Replace
 
-		if (curr == arr[rowI - 1][colI - 1]) {
+
+
+		if (curr == edit_matrix[rowI - 1][colI - 1]) {
 			rowI = rowI - 1;
 			colI = colI - 1;
 			firstI = firstI - 1;
 			secI = secI - 1;
 		}
-		else if (curr == arr[rowI - 1][colI]) {
+		else if (curr == edit_matrix[rowI - 1][colI]) {
 			rowI = rowI - 1;
 			colI = colI;
 			str2.insert(secI, "_");
 			firstI = firstI - 1;
 		}
-		else if (curr == arr[rowI][colI - 1]) {
+		else if (curr == edit_matrix[rowI][colI - 1]) {
 			rowI = rowI;
 			colI = colI - 1;
 			str1.insert(firstI, "_");
 			secI = secI - 1;
 		}
+
+
+		if (rowI == 0 && colI == 1) {
+			str1.insert(firstI, "_");
+			break;
+		}
+		else if (colI == 0 && rowI == 1) {
+			str2.insert(secI, "_");
+			break;
+		}
 	}
-	
+
 	this->edit1 = str1;
 	this->edit2 = str2;
 }
